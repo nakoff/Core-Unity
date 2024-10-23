@@ -20,10 +20,10 @@ namespace Core.LLEcs.Example
 
     public class TestSystem : IEcsSystem, IEntityAdded, IEntitiesUpdate
     {
-        public override EcsFilter Filter => _filter;
+        public EcsFilter Filter => _filter;
         private EcsFilter _filter;
 
-        public TestSystem(EcsWorld world) : base(world)
+        public TestSystem(EcsWorld world) : base()
         {
             _filter = new EcsFilter().With<TestComponent>();
         }
