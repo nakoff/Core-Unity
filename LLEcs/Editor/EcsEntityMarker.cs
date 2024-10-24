@@ -15,14 +15,14 @@ public class EcsEntityMarker : Editor
 
         if (obj != null && obj.GetComponent<Core.LLEcs.EcsEntity>() != null)
         {
-            Rect iconRect = new Rect(selectionRect.xMin - 0, selectionRect.y, 18, 18);
-            GUI.Label(iconRect, "💠");
+            Rect iconRect = new Rect(selectionRect.xMin - 2.0f, selectionRect.y - 2.0f, 18, 18);
+            GUI.Label(iconRect, "🔸");
         }
 
         if (obj != null && obj.GetComponent<Core.LLEcs.EcsWorld>() != null)
         {
-            Rect iconRect = new Rect(selectionRect.xMin - 2, selectionRect.y, 18, 18);
-            GUI.Label(iconRect, "🌐");
+            Rect iconRect = new Rect(selectionRect.xMin - 2, selectionRect.y - 1, 18, 18);
+            GUI.Label(iconRect, "💫");
         }
     }
 }
