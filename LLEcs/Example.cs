@@ -1,10 +1,9 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Core.LLEcs.Example
 {
-    public class Main : MonoBehaviour
+    class Main : MonoBehaviour
     {
         private void Start()
         {
@@ -13,12 +12,13 @@ namespace Core.LLEcs.Example
         }
 
         private void Update() => EcsWorld.Instance.Tick();
+        private void FixedUpdate() => EcsWorld.Instance.FixedTick();
         private void OnDestroy() => EcsWorld.Instance.UnregisterAllSystems();
     }
 
     public class TestComponent : MonoBehaviour { }
 
-    public class TestSystem : IEcsSystem, IEntityAdded, IEntitiesUpdate
+    class TestSystem : IEcsSystem, IEntityAdded, IEntitiesUpdate, IEntitiesFixedUpdate
     {
         public EcsFilter Filter => _filter;
         private EcsFilter _filter;
@@ -44,6 +44,11 @@ namespace Core.LLEcs.Example
                 Debug.Log("Update: " + entity);
                 entity.RemoveComponent<TestComponent>();
             }
+        }
+
+        public void EntitiesFixedUpdate(Dictionary<int, EcsEntity> entities, float deltaTime)
+        {
+            // fixedUpdate logic
         }
     }
 }
