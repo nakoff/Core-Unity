@@ -11,7 +11,7 @@ namespace Core.LLEcs
             {
                 if (_instance != null) return _instance;
 
-                _instance = FindObjectOfType<EcsWorld>();
+                _instance = FindFirstObjectByType<EcsWorld>();
                 if (_instance != null) return _instance;
 
                 GameObject singletonObject = new GameObject("EcsWorld");
@@ -29,6 +29,7 @@ namespace Core.LLEcs
         private Dictionary<int, IEntityAdded> _initableSystems = new();
         private Dictionary<int, IEntityRemoved> _removableSystems = new();
         private Dictionary<int, IEntitiesUpdate> _updatableSystems = new();
+        private Dictionary<int, IEntitiesFixedUpdate> _fixedUpdatableSystems = new();
 
         private List<EcsEntity> _entities = new();
         private List<EcsFilter> _filters = new();
@@ -87,6 +88,16 @@ namespace Core.LLEcs
 
             _addedEntities.Clear();
             _removedEntities.Clear();
+        }
+
+        public void FixedTick()
+        {
+            var dt = Time.fixedDeltaTime;
+            foreach (var system in _allSystems)
+            {
+                if (system is IEntitiesFixedUpdate fixedUpdateSystem)
+                    fixedUpdateSystem.EntitiesFixedUpdate(_filteredEntities[system.Filter.Id], dt);
+            }
         }
 
         public EcsEntity CreateEntity(string name)
@@ -148,12 +159,14 @@ namespace Core.LLEcs
             if (system is IEntityAdded entityAdded) _initableSystems.Add(ecsSystem.Id, entityAdded);
             if (system is IEntitiesUpdate entitiesUpdate) _updatableSystems.Add(ecsSystem.Id, entitiesUpdate);
             if (system is IEntityRemoved entitiesRemoved) _removableSystems.Add(ecsSystem.Id, entitiesRemoved);
+            if (system is IEntitiesFixedUpdate entitiesFixedUpdate) _fixedUpdatableSystems.Add(ecsSystem.Id, entitiesFixedUpdate);
         }
 
         public void UnregisterAllSystems()
         {
             _allSystems.Clear();
             _updatableSystems.Clear();
+            _fixedUpdatableSystems.Clear();
             _initableSystems.Clear();
             _removableSystems.Clear();
         }
@@ -194,10 +207,6 @@ namespace Core.LLEcs
 
                 if (match)
                     newFilteredEntities.Add(entity.Id, entity);
-            }
-
-            foreach (var c in filter.WithoutComponents)
-            {
             }
 
             // check added entityIds

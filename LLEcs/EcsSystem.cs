@@ -17,6 +17,11 @@ namespace Core.LLEcs
 		void EntitiesUpdate(Dictionary<int, EcsEntity> entities, float deltaTime);
 	}
 
+	public interface IEntitiesFixedUpdate : IEcsSystem
+	{
+		void EntitiesFixedUpdate(Dictionary<int, EcsEntity> entities, float deltaTime);
+	}
+
 	public interface IEntityRemoved : IEcsSystem
 	{
 		void EntitiesRemoved(List<int> ids);
